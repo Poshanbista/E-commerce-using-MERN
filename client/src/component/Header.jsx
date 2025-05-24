@@ -59,6 +59,14 @@ const Header = () => {
               width={70}
               height={50}
               alt='logo'
+              className='cursor-pointer'
+              onClick={()=>{
+                if(user?._id){
+                  navigate("/homepage")
+                }else{
+                  navigate("/")
+                }
+              }}
             />
           </div>
         </div>

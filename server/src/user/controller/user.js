@@ -103,7 +103,8 @@ export async function userLogin(req, res) {
             data: {
                 accessToken,
                 refreshToken,
-                userId: user._id
+                userId: user._id,
+                role:user.role
             }
         });
 

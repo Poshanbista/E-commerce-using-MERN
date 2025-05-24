@@ -21,6 +21,7 @@ import HomePageAfterLogin from "../pages/HomePageAFterLogin"
 import CheckOutPage from "../pages/CheckOutPage";
 import Success from "../pages/Success";
 import Cancel from "../pages/Cancel";
+import ManageOrderPage from "../pages/ManageOrderPage"
 
 
 
@@ -93,6 +94,10 @@ const router = createBrowserRouter([
                     {
                         path:"product",
                         element:<AdminPermission><ProductAdmin/></AdminPermission>
+                    },
+                    {
+                        path:"manageorders",
+                        element:<AdminPermission><ManageOrderPage/></AdminPermission>
                     }
                 ]
             },

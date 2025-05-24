@@ -59,6 +59,11 @@ const AddToCartButton = ({ data }) => {
         e.preventDefault()
         e.stopPropagation()
 
+        if (qty >= data.stock) {
+            toast.error("Out of stock")
+            return
+        }
+
         updateCartqty(cartItemDetails?._id, qty + 1)
         toast.success("Item added")
 

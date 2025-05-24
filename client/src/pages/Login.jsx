@@ -51,7 +51,7 @@ const Login = () => {
             localStorage.setItem("AccessToken", response.data.data.accessToken)
             localStorage.setItem("RefreshToken", response.data.data.refreshToken)
             localStorage.setItem("userId", response.data.data.userId);
-            localStorage.setItem("testKey", "12345");
+            localStorage.setItem("userRole",response.data.data.role)
             console.log(localStorage.getItem("testKey"));
 
             const userDetails = await fetchUserDetails()
@@ -61,7 +61,11 @@ const Login = () => {
                 email: "",
                 password: ""
             })
-            navigate("/homepage");
+            if(response.data.data.role ==="ADMIN"){
+                navigate("/dashboard/product")
+            }else{
+                navigate("/homepage")
+            }
         }
 
         catch (error) {

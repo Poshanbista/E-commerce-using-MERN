@@ -9,6 +9,7 @@ import { AxiosToastError } from '../utils/AxiosToastError'
 import { logout } from '../redux/userSlice'
 import { FaEdit } from "react-icons/fa";
 import { isAdmin } from "../utils/isAdmin.js"
+import { isUser } from '../utils/isUser.js'
 
 
 const UserMenu = ({ close }) => {
@@ -81,13 +82,26 @@ const UserMenu = ({ close }) => {
                             className='px-2 hover:bg-amber-200'>Product</Link>
                     )
                 }
+                {
+                    isAdmin(user.role) && (
+                        <Link to={"/dashboard/manageorders"}
+                            className='px-2 hover:bg-amber-200'>Manage Orders</Link>
+                    )
+                }
+                {
+                    isUser(user.role) && (
+                        <Link to={"/dashboard/myorders"}
+                            className='px-2 hover:bg-amber-200'>My order</Link>
 
-                <Link to={"/dashboard/myorders"}
-                    className='px-2 hover:bg-amber-200'>My order</Link>
+                    )
+                }
 
-                <Link to={"/dashboard/address"}
-                    className='px-2  hover:bg-amber-200'>Save Address</Link>
-
+                {
+                    isUser(user.role) && (
+                        <Link to={"/dashboard/address"}
+                            className='px-2  hover:bg-amber-200'>Save Address</Link>
+                    )
+                }
                 <button onClick={handleLogout}
                     className=' hover:bg-amber-200 text-left px-2 cursor-pointer'>Logout</button>
             </div>

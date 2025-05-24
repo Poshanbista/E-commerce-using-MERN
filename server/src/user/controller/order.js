@@ -3,6 +3,7 @@ import { order } from "../model/order.js"
 import { cartProduct } from "../model/cart.product.js"
 import { User } from "../model/user.register.js"
 import { StatusCodes } from "http-status-codes"
+import { product } from "../../admin/model/add.product.js"
 
 
 export const cashOnDeliveryOrder = async (req, res) => {
@@ -28,6 +29,13 @@ export const cashOnDeliveryOrder = async (req, res) => {
         })
 
         const generatedOrder = await order.insertMany(payload)
+
+        for (const item of list_items) {
+            await product.updateOne(
+                { _id: item.productId._id },
+                { $inc: { stock: -item.quantity } }
+            )
+        }
 
         //remove from cart
         const removeCart = await cartProduct.deleteMany({ userId: userId })
