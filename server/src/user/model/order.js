@@ -1,13 +1,14 @@
 import mongoose from "mongoose";
+import { orderStatus } from "../types/orderStatus.enum.js";
 
 
 const orderSchema = new mongoose.Schema({
-    userId:[
-        {
-            type:mongoose.Schema.ObjectId,
-            ref:"User"
-        }
-    ],
+    userId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+  required: true
+},
+
     orderId:{
         type:String,
         required:[true, "Provide orderId"],
@@ -41,10 +42,9 @@ const orderSchema = new mongoose.Schema({
         type:Number,
         default:null
     },
-    invoice_receipt:{
-        type:String,
-        default:""
-    }
+    invoice_receipt:{ type:String, default:""},
+
+    orderStatus :{type:String, enum:Object.values(orderStatus), default:orderStatus.PENDING},
 },
 {
     timestamps:true

@@ -16,8 +16,8 @@ export const addAddress = async (req, res) => {
             userId: userId
         })
 
-        const saveAddress = await createAddress.save()
-
+        const saveAddress = await createAddress.save();
+        
         const updateAddress = await User.findByIdAndUpdate(userId, {
             $push: {
                 address_details: saveAddress._id
