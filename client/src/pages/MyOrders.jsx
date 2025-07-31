@@ -30,6 +30,7 @@ const MyOrders = () => {
                   <p className='text-2xl'>{order.product_details.name}</p>
                   <p className='text-xs'> Rs. {order.totalAmt}</p>
                   <p className='text-xs'><strong>Date:</strong> {new Date(order.createdAt).toLocaleString()}</p>
+<p className='text-xs'><strong>Status:</strong> {order.orderStatus}</p>
                 </div>
               </div>
             </div>
