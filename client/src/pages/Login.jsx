@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import toast from "react-hot-toast"
 import { Link, useNavigate } from 'react-router-dom'
-import { AxiosToastError } from '../utils/AxiosToastError'
 import { summaryApi } from '../common/summary.api'
 import { Axios } from '../utils/axios.js'
 import { fetchUserDetails } from '../utils/fetchUserDetails.js'
 import { useDispatch } from 'react-redux'
 import { setUserDetails } from '../redux/userSlice.js'
+import { AxiosToastError } from '../utils/AxiosToastError.js'
 
 
 const Login = () => {
@@ -37,6 +37,7 @@ const Login = () => {
         e.preventDefault()
 
         if (loading) return;
+        setLoading(true)
 
         try {
             const response = await Axios({

@@ -38,19 +38,46 @@ export const cashOnDeliveryOrder = async (req, res) => {
         }
 
         //remove from cart
-        const removeCart = await cartProduct.deleteMany({ userId: userId })
-        const updateUser = await User.updateOne({ _id: userId }, { shopping_cart: [] })
+         const orderIds = generatedOrder.map(order => order._id);
+
+        // Remove from cart and update user
+        await cartProduct.deleteMany({ userId: userId });
+
+        await User.updateOne(
+            { _id: userId },
+            {
+                $set: { shopping_cart: [] },
+                $push: { orderHistory: { $each: orderIds } }
+            }
+        );
 
         return res.status(StatusCodes.OK).json({
-            message: "order successfully",
+            message: "Order placed successfully",
             success: true,
             data: generatedOrder
-        })
+        });
 
     } catch (error) {
-        console.log("Error in payment", error)
-        console.log("Server Error")
+        console.log("Error in payment", error);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            message: "Server Error",
+            success: false
+        });
     }
+
+    //     const removeCart = await cartProduct.deleteMany({ userId: userId })
+    //     const updateUser = await User.updateOne({ _id: userId }, { shopping_cart: [] })
+
+    //     return res.status(StatusCodes.OK).json({
+    //         message: "order successfully",
+    //         success: true,
+    //         data: generatedOrder
+    //     })
+
+    // } catch (error) {
+    //     console.log("Error in payment", error)
+    //     console.log("Server Error")
+    // }
 }
 
 // get order 

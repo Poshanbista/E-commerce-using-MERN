@@ -22,6 +22,7 @@ import CheckOutPage from "../pages/CheckOutPage";
 import Success from "../pages/Success";
 import Cancel from "../pages/Cancel";
 import ManageOrderPage from "../pages/ManageOrderPage"
+import Blog from "../pages/Blog";
 
 
 
@@ -116,6 +117,10 @@ const router = createBrowserRouter([
             {
                 path:"cancel",
                 element:<Cancel/>
+            },
+            {
+                path:"blog",
+                element:<Blog/>
             }
 
         ]

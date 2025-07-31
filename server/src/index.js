@@ -55,5 +55,5 @@ app.use("/api/order",orderRoute)
 const PORT = process.env.PORT || 9000;
 
 app.listen(PORT,()=>{
-    console.log("server is running at",PORT);
+    console.log("server is runn at",PORT);
 });

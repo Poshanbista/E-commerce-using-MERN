@@ -69,7 +69,7 @@ export async function userLogin(req, res) {
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(statusCodes.NOT_FOUND).json({ message: "Invalid email" });
+            return res.status(statusCodes.NOT_FOUND).json({ message: "Register First" });
         }
 
         if (user.status !== "Active") {
@@ -213,7 +213,7 @@ export async function updateUserDetails(req, res) {
 
 export async function forgotPassword(req, res) {
     try {
-        const { email, name } = req.body;
+        const { email } = req.body;
 
         if (!email) {
             return res.status(statusCodes.BAD_REQUEST).json({ message: "email required" });
@@ -346,8 +346,4 @@ export async function userDetails(req, res) {
         console.info("Server Error");
     }
 }
-
-
-
-
 

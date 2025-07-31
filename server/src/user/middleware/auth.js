@@ -16,7 +16,7 @@ export const auth = async (req, res, next) => {
         // console.log("Decode",decode)  to console the id of user after decoding Access_Token
 
         if (!decode) {
-            return resstatus(StatusCodes.unauthorized).json({ message: "unauthorized accesss" });
+            return res.status(StatusCodes.UNAUTHORIZED).json({ message: "unauthorized accesss" });
         }
 
         req.userId = decode.id    // export userId in the userLogout

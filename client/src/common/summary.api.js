@@ -138,7 +138,5 @@ export const summaryApi = {
         url:'/api/order/getOrder',
         method:'get'
     }
-   
-
 }
 
