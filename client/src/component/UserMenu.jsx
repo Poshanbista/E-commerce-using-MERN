@@ -48,27 +48,12 @@ const UserMenu = ({ close }) => {
             <div className='font-semibold'>My Account</div>
             <div className='text-sm flex items-center gap-3'>
                 <span>  {user.name || user.mobile}<span>{user.role === "ADMIN" ? "(Admin)" : ""}</span> </span>
-                <Link onClick={handleClose} to={'/dashboard/profile'} className='hover:text-green-700'> <FaEdit size={15} /></Link></div>
+                <Link onClick={handleClose} to={'/dashboard/profile'} className='hover:text-green-700'> <FaEdit size={15} /></Link>
+            </div>
 
             <Divider />
 
             <div className='text-sm grid gap-2' onClick={handleClose}>
-
-                {/* {
-                    isAdmin(user.role) && (
-                        <Link to={"/dashboard/category"}
-                            className='px-2 hover:bg-amber-200'>Category</Link>
-                    )
-                }
-
-                {
-                    isAdmin(user.role) && (
-                        <Link to={"/dashboard/subcategory"}
-                            className='px-2 hover:bg-amber-200'>Sub catagory</Link>
-                    )
-                } */}
-
-
                 {
                     isAdmin(user.role) && (
                         <Link to={"/dashboard/addproduct"}

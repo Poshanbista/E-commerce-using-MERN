@@ -42,10 +42,8 @@ const ForgotPassword = () => {
             });
             setData({
                 email: ""
-            })
-            
+            })   
         }
-
         catch (error) {
             AxiosToastError(error)
         }

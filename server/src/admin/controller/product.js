@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { product } from "../model/add.product.js"
 
 
-// upload a product
+// add a product
 export const addProduct = async (req, res) => {
     try {
         const {
@@ -58,12 +58,14 @@ export const getProduct = async (req, res) => {
         let { page, limit, search } = req.body
 
         if (!page) {
-            page = 2
+            page = 1
         }
 
         if (!limit) {
             limit = 10
         }
+
+        await product.deleteMany({ stock: 0 });
 
         const query = search ? {
             $text: {
@@ -125,7 +127,9 @@ export const deleteProduct = async (req, res) => {
         const { _id } = req.body
 
         if (!_id) {
-            return res.status(StatusCodes.NOT_FOUND).json({ message: "provide id" })
+            return res.status(StatusCodes.NOT_FOUND).json({
+                message: "provide id"
+            })
         }
 
         const deleteProduct = await product.deleteOne({ _id: _id })
@@ -148,7 +152,7 @@ export const deleteProduct = async (req, res) => {
 export const getProductHome = async (req, res) => {
     try {
 
-       const getProduct = await product.find()
+        const getProduct = await product.find()
 
         res.status(StatusCodes.OK).json({
             message: "All Product",

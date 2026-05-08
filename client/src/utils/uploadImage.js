@@ -1,19 +1,22 @@
-import { summaryApi } from "../common/summary.api.js"
-import { Axios } from "../utils/axios.js"
+
+import { Axios } from "./axios";
+import { summaryApi } from "../common/summary.api";
 
 const uploadImage = async (image) => {
-    try {
-        const formData = new FormData()
-        formData.append('image', image)
 
-        const response = await Axios({
-            ...summaryApi.uploadImage,
-            data: formData
-        })
-        return response
-    } catch (error) {
-        return error
-    }
-}
+    const formData = new FormData();
 
-export default uploadImage
+    formData.append("image", image);
+
+    const response = await Axios({
+        ...summaryApi.uploadImage,
+        data: formData,
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
+
+    return response;
+};
+
+export default uploadImage;

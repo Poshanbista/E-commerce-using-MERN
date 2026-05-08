@@ -69,7 +69,7 @@ export async function userLogin(req, res) {
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(statusCodes.NOT_FOUND).json({ message: "Register First" });
+            return res.status(statusCodes.NOT_FOUND).json({ message: "invalid email or password" });
         }
 
         if (user.status !== "Active") {
@@ -88,6 +88,7 @@ export async function userLogin(req, res) {
             {
                 last_login_data: new Date()
             })
+        await updateUser.save();
 
         const cookiesOption = {
             httpOnly: true,
@@ -104,7 +105,7 @@ export async function userLogin(req, res) {
                 accessToken,
                 refreshToken,
                 userId: user._id,
-                role:user.role
+                role: user.role
             }
         });
 
@@ -112,6 +113,28 @@ export async function userLogin(req, res) {
 
     catch (error) {
         console.log("Error in logging", error);
+        console.info("Server Error");
+    }
+}
+
+// userDetails
+export async function userDetails(req, res) {
+    try {
+        const userId = req.userId
+
+        const user = await User.findById(userId).select('-password -refresh_token')
+        if (!user) {
+            return res.status(statusCodes.NOT_FOUND).json({ message: "user not found" })
+        }
+
+        return res.status(statusCodes.OK).json({
+            message: "user Details",
+            data: user
+        })
+    }
+
+    catch (error) {
+        console.error("Error in fetching user details", error);
         console.info("Server Error");
     }
 }
@@ -138,7 +161,10 @@ export async function userLogout(req, res) {
                 refresh_token: ""
             })
 
-        return res.status(statusCodes.OK).json({ message: "Logout successfully", success: true });
+        return res.status(statusCodes.OK).json({
+            message: "Logout successfully",
+            success: true
+        });
     }
     catch (error) {
         console.error("Error in logout", error);
@@ -199,7 +225,10 @@ export async function updateUserDetails(req, res) {
                 mobile: mobile
             })
 
-        return res.status(statusCodes.OK).json({ message: "user details update successfully", success: true })
+        return res.status(statusCodes.OK).json({
+            message: "user details update successfully",
+            success: true
+        })
     }
 
     catch (error) {
@@ -225,7 +254,7 @@ export async function forgotPassword(req, res) {
         }
 
         const otp = await generateOTP()
-        const expireTime = new Date() + 60 * 60 * 1000  // 1hr
+        const expireTime = Date.now() + 60 * 60 * 1000  // 1hr
 
         const update = await User.findByIdAndUpdate(user._id,
             {
@@ -282,6 +311,8 @@ export async function verifyForgotPasswordOtp(req, res) {
             forgot_password_expiry: ""
         })
 
+        await updateUser.save();
+
         res.json({ message: "otp verify successfully " });
 
     }
@@ -317,6 +348,7 @@ export async function resetPassword(req, res) {
             password: newhashedPassword
         })
 
+        await update.save();
         res.json({ message: "Password reset successfully" })
     }
 
@@ -327,23 +359,7 @@ export async function resetPassword(req, res) {
 }
 
 
-// userDetails
 
-export async function userDetails(req, res) {
-    try {
-        const userId = req.userId
 
-        const user = await User.findById(userId).select('-password -refresh_token')
-        if (!user) {
-            return res.status(statusCodes.NOT_FOUND).json({ message: "user not found" })
-        }
 
-        return res.status(statusCodes.OK).json({ message: "user Details", data: user })
-    }
-
-    catch (error) {
-        console.error("Error in fetching user details", error);
-        console.info("Server Error");
-    }
-}
 

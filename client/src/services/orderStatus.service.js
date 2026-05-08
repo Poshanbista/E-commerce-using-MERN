@@ -1,11 +1,11 @@
 import React from 'react'
 
-const orderStatus = async(id) => {
+const orderStatus = async (id) => {
   try {
-    const res = await fetch(`http://localhost:9000/api/order/accept/${id}`,{
+    const res = await fetch(`http://localhost:9000/api/order/accept/${id}`, {
       method: "POST",
-       credentials: "include",
-      headers:{
+      credentials: "include",
+      headers: {
         "Content-Type": "application/json"
       }
     })

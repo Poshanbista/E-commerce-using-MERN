@@ -12,15 +12,14 @@ const OtpVerification = () => {
     const navigate = useNavigate()
     const inputRef = useRef([])
     const location = useLocation()
+    console.log("Location",location)
 
-    console.log("location",location)
 
-    useEffect(()=>{
-        if(!location?.state?.email)
-        {
-            navigate('/forgot-password') 
+    useEffect(() => {
+        if (!location?.state?.email) {
+            navigate('/forgot-password')
         }
-    },[])
+    }, [])
 
     const validValue = data.every(el => el)
 
@@ -31,8 +30,8 @@ const OtpVerification = () => {
             const response = await Axios({
                 ...summaryApi.Otp_verification,
                 data: {
-                   otp : data.join(""),
-                   email : location?.state?.email
+                    otp: data.join(""),
+                    email: location?.state?.email
                 }
             })
 
@@ -51,8 +50,6 @@ const OtpVerification = () => {
             AxiosToastError(error)
         }
     };
-
-
     return (
         <section className='w-full container mx-auto px-7'>
             <div className='bg-white my-4 w-full max-w-lg mx-auto rounded p-3'>
@@ -66,25 +63,24 @@ const OtpVerification = () => {
                                 data.map((element, index) => {
                                     return (
                                         <input
-                                        key={"otp"+index}
+                                            key={"otp" + index}
                                             type='text'
                                             id='otp'
-                                            ref={(ref)=>{
+                                            ref={(ref) => {
                                                 inputRef.current[index] = ref
                                                 return ref
                                             }}
                                             value={data[index]}
-                                            onChange={(e)=>{
+                                            onChange={(e) => {
                                                 const value = e.target.value
-                                                console.log("value",value)
-                                                 
+                                                console.log("value", value)
+
                                                 const newData = [...data]
                                                 newData[index] = value
                                                 setData(newData)
-                                                
-                                                if(value && index < 5)
-                                                {
-                                                    inputRef.current[index+1].focus()
+
+                                                if (value && index < 5) {
+                                                    inputRef.current[index + 1].focus()
                                                 }
                                             }}
                                             maxLength={1}

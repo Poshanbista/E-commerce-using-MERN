@@ -11,7 +11,7 @@ export const addToCartItem = async (req, res) => {
 
         if (!userId) {
             return res.status(StatusCodes.NOT_FOUND).json({
-                message: "login in first",
+                message: "login first",
                 success: false
             })
         }

@@ -12,7 +12,7 @@ const ManageOrderPage = () => {
     try {
       await orderStatus(orderId)
       toast.success("Order accepted successfully!")
-      // window.location.reload();
+      window.location.reload();
     } catch (error) {
       toast.error("Failed to accept order")
       console.error("Order acceptance error:", error)
@@ -71,7 +71,6 @@ const ManageOrderPage = () => {
                     {order.product_details.name}
                   </h3>
                   <div className="flex items-center gap-2 text-gray-600 mb-1">
-                    <FiDollarSign size={14} />
                     <span>Rs. {order.totalAmt.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-600">

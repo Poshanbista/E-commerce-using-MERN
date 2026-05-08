@@ -32,8 +32,11 @@ const Home = () => {
   return (
     <section>
       <div className='container mx-auto my-4 px-4'>
-        <div className={`w-full h-full min-h-48 bg-blue-100 rounded animate-pulse`}>
+        <div className={`w-full h-full min-h-48 bg-blue-100 rounded`}>
           <img
+            src="/Smart Bazaar.jpg"
+            alt="Banner"
+            className="w-500 h-80 rounded"
           />
 
         </div>

@@ -90,7 +90,6 @@ export const getOrderDetails = async (req, res) => {
         .find({ userId })
         .sort({ createdAt: -1 });
     }
-    console.log(getList)
 
     return res.status(StatusCodes.OK).json({
       message: "Getting order details",

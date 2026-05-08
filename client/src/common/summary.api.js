@@ -94,49 +94,50 @@ export const summaryApi = {
         url: '/api/cart/addCart',
         method: 'post'
     },
-    recent_view:{
-        url:'/api/product/recent_view',
-        method:'post'
+    recent_view: {
+        url: '/api/product/recent_view',
+        method: 'post'
     },
-    recommended:{
-        url:'/api/recommended',
-        method:'post'
+
+    recommended: {
+        url: '/api/recommended',
+        method: 'post'
     },
-    getCartItem:{
-        url:'/api/cart/getCart',
-        method:'get'
+    getCartItem: {
+        url: '/api/cart/getCart',
+        method: 'get'
     },
-    updateCartQty:{
-        url:'/api/cart/update-qty',
-        method:'put'
+    updateCartQty: {
+        url: '/api/cart/update-qty',
+        method: 'put'
     },
-    deleteCartItem:{
-        url:'/api/cart/deleteCartItem',
-        method:'delete'
+    deleteCartItem: {
+        url: '/api/cart/deleteCartItem',
+        method: 'delete'
     },
-    addAddress:{
-        url:'/api/address/addAddress',
-        method:'post'
+    addAddress: {
+        url: '/api/address/addAddress',
+        method: 'post'
     },
-    getAddress:{
-        url:'/api/address/getAddress',
-        method:'get'
+    getAddress: {
+        url: '/api/address/getAddress',
+        method: 'get'
     },
-    editAddress:{
-        url:'/api/address/editAddress',
-        method:'put'
+    editAddress: {
+        url: '/api/address/editAddress',
+        method: 'put'
     },
-    deleteAddress:{
-        url:'/api/address/deleteAddress',
-        method:'delete'
+    deleteAddress: {
+        url: '/api/address/deleteAddress',
+        method: 'delete'
     },
-    cashOnDelivery:{
-        url:'/api/order/cash-on-delivery',
-        method:'post'
+    cashOnDelivery: {
+        url: '/api/order/cash-on-delivery',
+        method: 'post'
     },
-    getOrderList:{
-        url:'/api/order/getOrder',
-        method:'get'
+    getOrderList: {
+        url: '/api/order/getOrder',
+        method: 'get'
     }
 }
 

@@ -8,6 +8,8 @@ import { AxiosToastError } from "../utils/AxiosToastError"
 import { PriceWithDiscount } from '../utils/PriceWithDiscount';
 import { handleAddAddress } from "../redux/addressSlice";
 import { setOrder } from "../redux/orderSlice";
+import { logout } from "../redux/userSlice";
+import { useNavigate } from "react-router-dom";
 
 
 export const GlobalContext = createContext(null)
@@ -16,6 +18,7 @@ export const useGlobalContext = () => useContext(GlobalContext)
 
 const GlobalProvider = ({ children }) => {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const [totalPrice, setTotalPrice] = useState(0)
     const [totalQty, setTotalQty] = useState(0)
     const cartItem = useSelector(state => state.cartItem.cart)
@@ -105,10 +108,19 @@ const GlobalProvider = ({ children }) => {
 
     }, [cartItem])
 
-   const  handleLogout = ()=>{
+    const handleLogout = async () => {
+        try {
+            await Axios.get('/logout'); // ✅ ADDED logout API
+        } catch (error) {
+            AxiosToastError(error) // ✅ ADDED to catch logout error
+        }
+
         localStorage.clear()
+        dispatch(logout()) // ✅ UPDATED to reset user state
         dispatch(handleAddItemCart([]))
+        navigate('/login') // ✅ ADDED navigation after logout
     }
+
 
     const fetchAddress =async() =>{
         try {
@@ -138,11 +150,13 @@ const GlobalProvider = ({ children }) => {
                 dispatch(setOrder(responseData.data))
             }
         } catch (error) {
-            console.log(error)
+            AxiosToastError(error)
         }
     }
 
     useEffect(() => {
+         if (!user?._id) return;
+
         fetchCartItem();
         fetchAddress();
         fetchOrder();
@@ -157,8 +171,8 @@ const GlobalProvider = ({ children }) => {
             fetchOrder,
             totalQty,
             totalPrice,
-            notDiscountTotalPrice
-
+            notDiscountTotalPrice,
+            handleLogout
         }}>
             {children}
         </GlobalContext.Provider>

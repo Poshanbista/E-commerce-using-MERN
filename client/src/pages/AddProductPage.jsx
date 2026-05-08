@@ -28,7 +28,10 @@ const AddProductPage = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target
-        setData(prev => ({ ...prev, [name]: value }))
+        setData(prev => ({
+            ...prev,
+            [name]: value
+        }))
     }
 
     const handleUploadImage = async (e) => {
@@ -53,14 +56,17 @@ const AddProductPage = () => {
     const handleDeleteImage = async (index) => {
         const newImages = [...data.image]
         newImages.splice(index, 1)
-        setData(prev => ({ ...prev, image: newImages }))
+        setData(prev => ({
+            ...prev,
+            image: newImages
+        }))
         toast.success("Image removed")
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setIsSubmitting(true)
-        
+
         try {
             const response = await Axios({
                 ...summaryApi.addProduct,
@@ -96,7 +102,7 @@ const AddProductPage = () => {
                 <h2 className='font-bold text-2xl text-white'>Add New Product</h2>
                 <p className='text-blue-100'>Fill in the details below to add a new product</p>
             </div>
-            
+
             <div className='bg-white rounded-xl shadow-md overflow-hidden p-6'>
                 <form className='grid grid-cols-1 md:grid-cols-2 gap-6' onSubmit={handleSubmit}>
                     {/* Product Details Column */}
@@ -178,7 +184,7 @@ const AddProductPage = () => {
                     <div className='space-y-4 md:col-span-1'>
                         <div className='space-y-1'>
                             <label className='block text-sm font-medium text-gray-700'>Product Images</label>
-                            <label htmlFor='productImage' className='block h-32 border-2 border-dashed border-gray-300 rounded-xl flex justify-center items-center cursor-pointer hover:border-blue-500 transition group'>
+                            <label htmlFor='productImage' className='h-32 border-2 border-dashed border-gray-300 rounded-xl flex justify-center items-center cursor-pointer hover:border-blue-500 transition group'>
                                 <div className='text-center flex flex-col items-center'>
                                     <FaCloudUploadAlt size={28} className='text-gray-400 group-hover:text-blue-500 transition' />
                                     <p className='mt-2 text-sm text-gray-500'>Click to upload images</p>
@@ -192,7 +198,7 @@ const AddProductPage = () => {
                                     onChange={handleUploadImage}
                                 />
                             </label>
-                            
+
                             {/* Image Thumbnails */}
                             {data.image.length > 0 && (
                                 <div className='mt-3'>

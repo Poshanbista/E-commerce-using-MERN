@@ -43,19 +43,16 @@ const Header = () => {
               alt='logo'
               className='cursor-pointer'
               onClick={() => {
-                if (user?._id) {
-                  navigate("/homepage")
+                if (!user?._id) {
+                  navigate("/");
+                } else if (user?.role === "ADMIN") {
+                  navigate("/dashboard/product");
                 } else {
-                  navigate("/")
+                  navigate("/homepage");
                 }
               }}
             />
           </div>
-        </div>
-
-        {/* Search */}
-        <div>
-          <Search />
         </div>
 
         {/* Login and My Cart */}

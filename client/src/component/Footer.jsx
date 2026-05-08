@@ -24,7 +24,7 @@ const Footer = () => {
             <h4 className="text-lg font-semibold mb-4">Navigation</h4>
             <ul className="space-y-2 text-sm">
               <li><a href="#" className="hover:underline">Home</a></li>
-              <li><Link to="/blog" className="hover:underline">Blog</Link></li>
+              <li><Link to="/blog" className="hover:underline">About Us</Link></li>
               <li><a href="" className="hover:underline">Contact</a></li>
             </ul>
           </div>

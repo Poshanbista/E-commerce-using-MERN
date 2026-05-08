@@ -25,8 +25,6 @@ import ManageOrderPage from "../pages/ManageOrderPage"
 import Blog from "../pages/Blog";
 
 
-
-
 const router = createBrowserRouter([
     {
         path:"/",
