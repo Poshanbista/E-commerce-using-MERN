@@ -1,7 +1,5 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
-dotenv.config();
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import helmet from "helmet";
@@ -17,6 +15,8 @@ import cartRoute from "./admin/routes/cart.routes.js";
 import addressRoute from "./user/routes/address.routes.js";
 import orderRoute from "./user/routes/order.routes.js";
 
+// console.log("email", process.env.Email)
+// console.log("password", process.env.Pass)
 
 db_config();
 
@@ -52,7 +52,7 @@ app.use("/api",recommendationRoute)
 app.use("/api/address",addressRoute)
 app.use("/api/order",orderRoute)
 
-const PORT = process.env.PORT || 9000;
+const PORT = process.env.PORT;
 
 app.listen(PORT,()=>{
     console.log("server is runn at",PORT);
