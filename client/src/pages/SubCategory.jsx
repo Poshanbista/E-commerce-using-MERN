@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import AddSubCategory from '../component/AddSubCategory'
 import { AxiosToastError } from '../utils/AxiosToastError'
 import { Axios } from '../utils/axios'
 import { summaryApi } from '../common/summary.api'
 import ConfirmBox from '../component/ConfirmBox'
 import toast from 'react-hot-toast'
+import { setCategory } from '../redux/productSlice'
 
 const SubCategory = () => {
+
+  const dispatch = useDispatch()
 
   const [openAddSubCategory, setOpenAddSubCategory] = useState(false)
   const [subCategoryData, setSubCategoryData] = useState([])
@@ -65,6 +69,7 @@ const SubCategory = () => {
 
       if (responseData.success) {
         setCategoryData(responseData.data)
+        dispatch(setCategory(responseData.data))
       }
     }
     catch (error) {

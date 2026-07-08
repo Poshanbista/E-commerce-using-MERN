@@ -63,6 +63,20 @@ const UserMenu = ({ close }) => {
 
                 {
                     isAdmin(user.role) && (
+                        <Link to={"/dashboard/category"}
+                            className='px-2 hover:bg-amber-200'>Add Category</Link>
+                    )
+                }
+
+                {
+                    isAdmin(user.role) && (
+                        <Link to={"/dashboard/subcategory"}
+                            className='px-2 hover:bg-amber-200'>Add sub-category</Link>
+                    )
+                }
+
+                {
+                    isAdmin(user.role) && (
                         <Link to={"/dashboard/product"}
                             className='px-2 hover:bg-amber-200'>Product</Link>
                     )

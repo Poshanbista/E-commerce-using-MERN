@@ -16,7 +16,6 @@ const AddProductPage = () => {
         ram: "",
         ssd: "",
         processor: "",
-        unit: "",
         stock: "",
         price: "",
         discount: "",
@@ -79,7 +78,6 @@ const AddProductPage = () => {
                 setData({
                     name: "",
                     image: [],
-                    unit: "",
                     ram: "",
                     ssd: "",
                     processor: "",
@@ -229,20 +227,6 @@ const AddProductPage = () => {
                         </div>
 
                         <div className='grid grid-cols-2 gap-4'>
-                            <div className='space-y-1'>
-                                <label htmlFor='unit' className='block text-sm font-medium text-gray-700'>Unit</label>
-                                <input
-                                    type='text'
-                                    id='unit'
-                                    placeholder='e.g., piece, kg'
-                                    name='unit'
-                                    value={data.unit}
-                                    onChange={handleChange}
-                                    required
-                                    className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition'
-                                />
-                            </div>
-
                             <div className='space-y-1'>
                                 <label htmlFor='stock' className='block text-sm font-medium text-gray-700'>Stock Quantity</label>
                                 <input

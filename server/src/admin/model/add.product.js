@@ -21,10 +21,6 @@ const productSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    unit: {
-        type: String,
-        default: ""
-    },
     stock: {
         type: Number,
         default: null
