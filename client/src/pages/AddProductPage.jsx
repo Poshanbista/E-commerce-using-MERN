@@ -2,30 +2,27 @@ import React, { useState, useEffect } from 'react'
 import { FaCloudUploadAlt } from "react-icons/fa";
 import uploadImage from "../utils/uploadImage.js"
 import ViewImage from '../component/ViewImage.jsx';
-import { MdDelete } from "react-icons/md";
 import { Axios } from '../utils/axios.js';
 import { summaryApi } from '../common/summary.api.js';
 import { AxiosToastError } from '../utils/AxiosToastError.js'
 import toast from 'react-hot-toast';
-import { FiPlus, FiMinus } from 'react-icons/fi';
+import { FiMinus } from 'react-icons/fi';
+import { categoryFields } from '../utils/categoryFields.js';
 
 const AddProductPage = () => {
     const [data, setData] = useState({
         name: "",
         image: [],
-        ram: "",
-        ssd: "",
-        processor: "",
+        category: "",
         stock: "",
         price: "",
         discount: "",
         description: "",
-        category: "",
-        subCategory: "",
     })
 
+    const [categoryFieldsData, setCategoryFieldsData] = useState({})
     const [categoryList, setCategoryList] = useState([])
-    const [subCategoryList, setSubCategoryList] = useState([])
+    const [selectedCategoryName, setSelectedCategoryName] = useState("")
 
     const [viewImageURL, setViewImageURl] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -47,30 +44,31 @@ const AddProductPage = () => {
 
     useEffect(() => {
         if (!data.category) {
-            setSubCategoryList([])
-            setData(prev => ({ ...prev, subCategory: "" }))
+            setSelectedCategoryName("")
+            setCategoryFieldsData({})
             return
         }
-        const fetchSubCategories = async () => {
-            try {
-                const response = await Axios({
-                    // ...summaryApi.get_subCategory_by_category,
-                    data: { categoryId: data.category }
-                })
-                const { data: resData } = response
-                if (resData.success) {
-                    setSubCategoryList(resData.data)
-                }
-            } catch (error) {
-                AxiosToastError(error)
-            }
+        const selected = categoryList.find(cat => cat._id === data.category)
+        if (selected) {
+            setSelectedCategoryName(selected.name)
+            const fields = categoryFields[selected.name] || []
+            const initial = {}
+            fields.forEach(f => { initial[f.name] = "" })
+            setCategoryFieldsData(initial)
         }
-        fetchSubCategories()
-    }, [data.category])
+    }, [data.category, categoryList])
 
     const handleChange = (e) => {
         const { name, value } = e.target
         setData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
+    const handleCategoryFieldChange = (e) => {
+        const { name, value } = e.target
+        setCategoryFieldsData(prev => ({
             ...prev,
             [name]: value
         }))
@@ -110,9 +108,14 @@ const AddProductPage = () => {
         setIsSubmitting(true)
 
         try {
+            const payload = {
+                ...data,
+                ...categoryFieldsData,
+            }
+
             const response = await Axios({
                 ...summaryApi.addProduct,
-                data: data
+                data: payload
             })
 
             const { data: responseData } = response
@@ -121,16 +124,14 @@ const AddProductPage = () => {
                 setData({
                     name: "",
                     image: [],
-                    ram: "",
-                    ssd: "",
-                    processor: "",
+                    category: "",
                     stock: "",
                     price: "",
                     discount: "",
                     description: "",
-                    category: "",
-                    subCategory: "",
                 })
+                setCategoryFieldsData({})
+                setSelectedCategoryName("")
             }
         } catch (error) {
             AxiosToastError(error)
@@ -139,14 +140,14 @@ const AddProductPage = () => {
         }
     }
 
+    const currentFields = selectedCategoryName ? (categoryFields[selectedCategoryName] || []) : []
+
     return (
         <section className="max-w-4xl mx-auto p-4 md:p-6">
             <div className='p-4 rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 mb-6 shadow-lg'>
                 <h2 className='font-bold text-2xl text-white'>Add New Product</h2>
                 <p className='text-blue-100'>Fill in the details below to add a new product</p>
             </div>
-
-            
 
             <div className='bg-white rounded-xl shadow-md overflow-hidden p-6'>
                 <form className='grid grid-cols-1 md:grid-cols-2 gap-6' onSubmit={handleSubmit}>
@@ -183,65 +184,34 @@ const AddProductPage = () => {
                             </select>
                         </div>
 
-                        {/* <div className='space-y-1'>
-                            <label htmlFor='subCategory' className='block text-sm font-medium text-gray-700'>Sub Category</label>
-                            <select
-                                id='subCategory'
-                                name='subCategory'
-                                value={data.subCategory}
-                                onChange={handleChange}
-                                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white'
-                            >
-                                <option value="">Select sub category (optional)</option>
-                                {subCategoryList.map(sub => (
-                                    <option key={sub._id} value={sub._id}>{sub.name}</option>
-                                ))}
-                            </select>
-                        </div> */}
-
-                        <div className='space-y-1'>
-                            <label htmlFor='processor' className='block text-sm font-medium text-gray-700'>Processor/Generation</label>
-                            <input
-                                type='text'
-                                id='processor'
-                                placeholder='M3 Pro, 12-core'
-                                name='processor'
-                                value={data.processor}
-                                onChange={handleChange}
-                                required
-                                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition'
-                            />
-                        </div>
-
-                        <div className='grid grid-cols-2 gap-4'>
-                            <div className='space-y-1'>
-                                <label htmlFor='ram' className='block text-sm font-medium text-gray-700'>RAM</label>
-                                <input
-                                    type='text'
-                                    id='ram'
-                                    placeholder='16GB'
-                                    name='ram'
-                                    value={data.ram}
-                                    onChange={handleChange}
-                                    required
-                                    className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition'
-                                />
+                        {currentFields.length > 0 && (
+                            <div className='p-3 bg-blue-50 rounded-lg border border-blue-200'>
+                                <p className='text-xs font-semibold text-blue-700 mb-3 uppercase tracking-wide'>{selectedCategoryName} Specifications</p>
+                                <div className='space-y-3'>
+                                    {currentFields.map(field => (
+                                        <div key={field.name} className='space-y-1'>
+                                            <label htmlFor={field.name} className='block text-sm font-medium text-gray-700'>{field.label}</label>
+                                            <input
+                                                type='text'
+                                                id={field.name}
+                                                placeholder={field.placeholder}
+                                                name={field.name}
+                                                value={categoryFieldsData[field.name] || ""}
+                                                onChange={handleCategoryFieldChange}
+                                                required
+                                                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white'
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
+                        )}
 
-                            <div className='space-y-1'>
-                                <label htmlFor='ssd' className='block text-sm font-medium text-gray-700'>SSD</label>
-                                <input
-                                    type='text'
-                                    id='ssd'
-                                    placeholder='512GB'
-                                    name='ssd'
-                                    value={data.ssd}
-                                    onChange={handleChange}
-                                    required
-                                    className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition'
-                                />
+                        {!data.category && (
+                            <div className='p-3 bg-gray-50 rounded-lg border border-gray-200 text-center'>
+                                <p className='text-sm text-gray-500'>Select a category to see relevant fields</p>
                             </div>
-                        </div>
+                        )}
 
                         <div className='space-y-1'>
                             <label htmlFor='description' className='block text-sm font-medium text-gray-700'>Description</label>
@@ -278,7 +248,6 @@ const AddProductPage = () => {
                                 />
                             </label>
 
-                            {/* Image Thumbnails */}
                             {data.image.length > 0 && (
                                 <div className='mt-3'>
                                     <p className='text-sm font-medium text-gray-700 mb-2'>Uploaded Images ({data.image.length})</p>

@@ -7,10 +7,18 @@ import { summaryApi } from '../common/summary.api';
 import toast from 'react-hot-toast';
 import { DisplayPriceInRs } from '../utils/DisplayPriceInRs';
 import { PriceWithDiscount } from '../utils/PriceWithDiscount';
+import { categoryFieldNames } from '../utils/categoryFields';
 
 const ProductCartAdmin = ({ data, fetchProductData }) => {
     const [editOpen, setEditOpen] = useState(false)
     const [openDelete, setOpenDelete] = useState(false)
+
+    const categoryName = data.category?.name || ""
+    const fields = categoryFieldNames[categoryName] || []
+    const specs = fields
+        .map(f => data[f])
+        .filter(Boolean)
+        .join(", ")
 
     const handleDeleteCancel = () => {
         setOpenDelete(false)
@@ -49,7 +57,7 @@ const ProductCartAdmin = ({ data, fetchProductData }) => {
                     className='w-full h-full  object-scale-down scale-100'
                 />
             </div>
-            <p className='text-base font-semibold line-clamp-2 '>{data.name}  {data.ram}, {data.ssd}, {data.processor}</p>
+            <p className='text-base font-semibold line-clamp-2 '>{data.name} {specs && `- ${specs}`}</p>
             <p className='text-slate-500'>{DisplayPriceInRs(PriceWithDiscount(data.price,data.discount))}</p>
             <div className='grid grid-cols-2 gap-4 py-4'>
                 <button onClick={() => setEditOpen(true)} className='border px-1 py-1 text-sm rounded border-green-500 bg-green-300 hover:bg-green-500 '>Edit</button>

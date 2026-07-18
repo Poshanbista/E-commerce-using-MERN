@@ -8,18 +8,34 @@ export const addProduct = async (req, res) => {
         const {
             name,
             image,
+            category,
             ram,
             ssd,
             processor,
+            screenSize,
+            battery,
+            dpi,
+            connectivity,
+            brand,
+            sensorType,
+            resolution,
+            refreshRate,
+            panelType,
+            responseTime,
+            layoutSize,
+            switchType,
+            backlight,
+            driverSize,
+            frequencyResponse,
+            noiseCancellation,
+            mic,
             price,
             stock,
             discount,
             description,
-            category,
-            // subCategory,
         } = req.body;
 
-        if (!name || !image || !ram || !ssd || !processor || !price || !stock || !discount || !description || !category) {
+        if (!name || !image || !category || !price || !stock || !discount || !description) {
             return res.status(StatusCodes.BAD_REQUEST).json({ message: "All fields are required" });
         }
 
@@ -31,19 +47,35 @@ export const addProduct = async (req, res) => {
         const newProduct = new product({
             name,
             image,
+            category,
             ram,
             ssd,
             processor,
+            screenSize,
+            battery,
+            dpi,
+            connectivity,
+            brand,
+            sensorType,
+            resolution,
+            refreshRate,
+            panelType,
+            responseTime,
+            layoutSize,
+            switchType,
+            backlight,
+            driverSize,
+            frequencyResponse,
+            noiseCancellation,
+            mic,
             price,
             stock,
             discount,
             description,
-            category,
-            // subCategory,
         })
 
         await newProduct.save()
-        return res.status(StatusCodes.OK).json({ message: "Product add successfully", success: true, data: product })
+        return res.status(StatusCodes.OK).json({ message: "Product add successfully", success: true, data: newProduct })
 
 
     } catch (error) {
@@ -78,7 +110,7 @@ export const getProduct = async (req, res) => {
         const skip = (page - 1) * limit
 
         const [data, totalCount] = await Promise.all([
-            product.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
+            product.find(query).populate("category").sort({ createdAt: -1 }).skip(skip).limit(limit),
             product.countDocuments(query)
         ])
 
@@ -154,7 +186,7 @@ export const deleteProduct = async (req, res) => {
 export const getProductHome = async (req, res) => {
     try {
 
-        const getProduct = await product.find()
+        const getProduct = await product.find().populate("category")
 
         res.status(StatusCodes.OK).json({
             message: "All Product",
@@ -175,7 +207,7 @@ export const getProductDetails = async (req, res) => {
     try {
         const { productId } = req.body
 
-        const foundProduct = await product.findOne({ _id: productId })
+        const foundProduct = await product.findOne({ _id: productId }).populate("category")
 
         return res.status(StatusCodes.OK).json({
             message: "product details",

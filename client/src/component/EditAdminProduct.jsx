@@ -8,25 +8,37 @@ import { summaryApi } from '../common/summary.api.js';
 import { AxiosToastError } from '../utils/AxiosToastError.js'
 import toast from 'react-hot-toast';
 import { IoClose } from 'react-icons/io5';
+import { categoryFields, categoryFieldNames } from '../utils/categoryFields.js';
 
 const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
-  const [data, setData] = useState({
+  const allCategoryFieldNames = [
+    "ram", "ssd", "processor", "screenSize", "battery",
+    "dpi", "connectivity", "brand", "sensorType",
+    "resolution", "refreshRate", "panelType", "responseTime",
+    "layoutSize", "switchType", "backlight",
+    "driverSize", "frequencyResponse", "noiseCancellation", "mic",
+  ]
+
+  const baseData = {
     _id: propsData._id,
     name: propsData.name,
-    ram: propsData.ram,
-    ssd: propsData.ssd,
-    processor: propsData.processor,
     image: propsData.image,
     stock: propsData.stock,
     price: propsData.price,
     discount: propsData.discount,
     description: propsData.description,
-    category: propsData.category || "",
-    subCategory: propsData.subCategory || "",
+    category: propsData.category?._id || propsData.category || "",
+  }
+
+  allCategoryFieldNames.forEach(f => {
+    baseData[f] = propsData[f] || ""
   })
 
+  const [data, setData] = useState(baseData)
+
   const [categoryList, setCategoryList] = useState([])
-  const [subCategoryList, setSubCategoryList] = useState([])
+  const [categoryFieldsData, setCategoryFieldsData] = useState({})
+  const [selectedCategoryName, setSelectedCategoryName] = useState("")
   const [viewImageURL, setViewImageURl] = useState("")
 
   useEffect(() => {
@@ -46,72 +58,68 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
 
   useEffect(() => {
     if (!data.category) {
-      setSubCategoryList([])
-      setData(prev => ({ ...prev, subCategory: "" }))
+      setSelectedCategoryName("")
+      setCategoryFieldsData({})
       return
     }
-    const fetchSubCategories = async () => {
-      try {
-        const response = await Axios({
-          ...summaryApi.get_subCategory_by_category,
-          data: { categoryId: data.category }
-        })
-        const { data: resData } = response
-        if (resData.success) {
-          setSubCategoryList(resData.data)
-        }
-      } catch (error) {
-        AxiosToastError(error)
-      }
+    const selected = categoryList.find(cat => cat._id === data.category)
+    if (selected) {
+      setSelectedCategoryName(selected.name)
+      const fields = categoryFields[selected.name] || []
+      const initial = {}
+      fields.forEach(f => { initial[f.name] = data[f.name] || "" })
+      setCategoryFieldsData(initial)
     }
-    fetchSubCategories()
-  }, [data.category])
+  }, [data.category, categoryList])
 
   const handleChange = (e) => {
     const { name, value } = e.target
+    setData((preve) => ({
+      ...preve,
+      [name]: value
+    }))
+  }
 
-    setData((preve) => {
-      return {
-        ...preve,
-        [name]: value
-      }
-    })
+  const handleCategoryFieldChange = (e) => {
+    const { name, value } = e.target
+    setCategoryFieldsData(prev => ({
+      ...prev,
+      [name]: value
+    }))
   }
 
   const handleUploadImage = async (e) => {
     const file = e.target.files[0]
-
-    if (!file) {
-      return
-    }
+    if (!file) return
 
     const response = await uploadImage(file)
     const { data: imageResponse } = response
     const imageUrl = imageResponse?.data?.url
 
-    setData((preve) => {
-      return {
-        ...preve,
-        image: [...preve.image, imageUrl]
-      }
-    })
+    setData((preve) => ({
+      ...preve,
+      image: [...preve.image, imageUrl]
+    }))
   }
 
   const handleDeleteImage = async (index) => {
-    data.image.splice(index, 1),
-      setData((preve) => {
-        return {
-          ...preve
-        }
-      })
+    data.image.splice(index, 1)
+    setData((preve) => ({
+      ...preve
+    }))
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
+      const payload = {
+        ...data,
+        ...categoryFieldsData,
+      }
+
       const response = await Axios({
         ...summaryApi.updateProduct,
-        data: data
+        data: payload
       })
 
       const { data: responseData } = response
@@ -121,36 +129,20 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
           close()
         }
         fetchProductData()
-        setData({
-          name: "",
-          image: [],
-          ram:"",
-          ssd:"",
-          processor:"",
-          stock: "",
-          price: "",
-          discount: "",
-          description: "",
-          category: "",
-          subCategory: "",
-        })
       }
-
-
     } catch (error) {
       AxiosToastError(error)
     }
-
-    console.log("data", data)
   }
 
+  const currentFields = selectedCategoryName ? (categoryFields[selectedCategoryName] || []) : []
 
   return (
     <section className='fixed inset-0 z-50 bg-neutral-900/80 bg-opacity-70 flex items-center justify-center'>
-      <div className='bg-white max-w-3xl w-full rounded p-4  overflow-y-auto h-full'>
+      <div className='bg-white max-w-3xl w-full rounded p-4 overflow-y-auto h-full'>
         <section className=''>
           <div className='p-2 shadow-md top-0 bg-white flex items-center justify-between'>
-            <h2 className='font-semibold '>Edit Product</h2>
+            <h2 className='font-semibold'>Edit Product</h2>
             <div onClick={close} className='cursor-pointer'>
               <IoClose size={30} />
             </div>
@@ -168,94 +160,55 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
                   value={data.name}
                   onChange={handleChange}
                   required
-                  className='border p-1.5 rounded hover:border-amber-400  bg-blue-100'
+                  className='border p-1.5 rounded hover:border-amber-400 bg-blue-100'
                 />
-                 <div className='grid gap-1'>
-                        <label htmlFor='ram'>RAM</label>
-                        <input
-                            type='text'
-                            id='ram'
-                            placeholder='enter RAM'
-                            name='ram'
-                            value={data.ram}
-                            onChange={handleChange}
-                            required
-                            className='border p-1.5 rounded hover:border-amber-400  bg-blue-100'
-                        />
-                    </div>
-
-                    <div className='grid gap-1'>
-                        <label htmlFor='ssd'>SSD</label>
-                        <input
-                            type='text'
-                            id='ssd'
-                            placeholder='enter SSD'
-                            name='ssd'
-                            value={data.ssd}
-                            onChange={handleChange}
-                            required
-                            className='border p-1.5 rounded hover:border-amber-400  bg-blue-100'
-                        />
-                    </div>
-
-                    <div className='grid gap-1'>
-                        <label htmlFor='processor'>Processor/Gen</label>
-                        <input
-                            type='text'
-                            id='processor'
-                            placeholder='enter product name'
-                            name='processor'
-                            value={data.processor}
-                            onChange={handleChange}
-                            required
-                            className='border p-1.5 rounded hover:border-amber-400  bg-blue-100'
-                        />
-                    </div>
-
-                    <div className='grid gap-1'>
-                        <label htmlFor='category'>Category</label>
-                        <select
-                            id='category'
-                            name='category'
-                            value={data.category}
-                            onChange={handleChange}
-                            required
-                            className='border p-1.5 rounded hover:border-amber-400 bg-blue-100'
-                        >
-                            <option value="">Select category</option>
-                            {categoryList.map(cat => (
-                                <option key={cat._id} value={cat._id}>{cat.name}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className='grid gap-1'>
-                        <label htmlFor='subCategory'>Sub Category</label>
-                        <select
-                            id='subCategory'
-                            name='subCategory'
-                            value={data.subCategory}
-                            onChange={handleChange}
-                            className='border p-1.5 rounded hover:border-amber-400 bg-blue-100'
-                        >
-                            <option value="">Select sub category (optional)</option>
-                            {subCategoryList.map(sub => (
-                                <option key={sub._id} value={sub._id}>{sub.name}</option>
-                            ))}
-                        </select>
-                    </div>     
               </div>
-             
+
+              <div className='grid gap-1'>
+                <label htmlFor='category'>Category</label>
+                <select
+                  id='category'
+                  name='category'
+                  value={data.category}
+                  onChange={handleChange}
+                  required
+                  className='border p-1.5 rounded hover:border-amber-400 bg-blue-100'
+                >
+                  <option value="">Select category</option>
+                  {categoryList.map(cat => (
+                    <option key={cat._id} value={cat._id}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {currentFields.length > 0 && (
+                <div className='grid gap-2 p-2 bg-blue-50 rounded border border-blue-200'>
+                  <p className='text-xs font-semibold text-blue-700 uppercase tracking-wide'>{selectedCategoryName} Specifications</p>
+                  {currentFields.map(field => (
+                    <div key={field.name} className='grid gap-1'>
+                      <label htmlFor={field.name}>{field.label}</label>
+                      <input
+                        type='text'
+                        id={field.name}
+                        placeholder={field.placeholder}
+                        name={field.name}
+                        value={categoryFieldsData[field.name] || ""}
+                        onChange={handleCategoryFieldChange}
+                        required
+                        className='border p-1.5 rounded hover:border-amber-400 bg-white'
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <div>
                 <p>Image</p>
                 <div>
-                  <label htmlFor='productImage' className=' h-24 border rounded flex justify-center items-center cursor-pointer'>
+                  <label htmlFor='productImage' className='h-24 border rounded flex justify-center items-center cursor-pointer'>
                     <div className='text-center flex justify-center items-center flex-col'>
-
                       <FaCloudUploadAlt size={35} />
                       <p>upload image</p>
-
                     </div>
                     <input
                       type='file'
@@ -265,7 +218,6 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
                       onChange={handleUploadImage}
                     />
                   </label>
-                  {/** display upload image */}
                   <div className='my-2 flex flex-wrap gap-5'>
                     {
                       data.image.map((img, index) => {
@@ -277,7 +229,7 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
                               className='w-full h-full object-scale-down cursor-pointer'
                               onClick={() => setViewImageURl(img)}
                             />
-                            <div onClick={() => handleDeleteImage(index)} className='cursor-pointer absolute bottom-1 right-0 p-0 bg-amber-600 hover:bg-green-800 hidden group-hover:block '>
+                            <div onClick={() => handleDeleteImage(index)} className='cursor-pointer absolute bottom-1 right-0 p-0 bg-amber-600 hover:bg-green-800 hidden group-hover:block'>
                               <MdDelete />
                             </div>
                           </div>
@@ -293,12 +245,12 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
                 <input
                   type='number'
                   id='stock'
-                  placeholder='enter product name'
+                  placeholder='enter stock quantity'
                   name='stock'
                   value={data.stock}
                   onChange={handleChange}
                   required
-                  className='border p-1.5 rounded hover:border-amber-400  bg-blue-100'
+                  className='border p-1.5 rounded hover:border-amber-400 bg-blue-100'
                 />
               </div>
 
@@ -312,7 +264,7 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
                   value={data.price}
                   onChange={handleChange}
                   required
-                  className='border p-1.5 rounded hover:border-amber-400  bg-blue-100'
+                  className='border p-1.5 rounded hover:border-amber-400 bg-blue-100'
                 />
               </div>
 
@@ -326,7 +278,7 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
                   value={data.discount}
                   onChange={handleChange}
                   required
-                  className='border p-1.5 rounded hover:border-amber-400  bg-blue-100'
+                  className='border p-1.5 rounded hover:border-amber-400 bg-blue-100'
                 />
               </div>
 
@@ -364,5 +316,3 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
 }
 
 export default EditAdminProduct
-
-

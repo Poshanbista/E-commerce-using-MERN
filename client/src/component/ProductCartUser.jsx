@@ -3,11 +3,19 @@ import { DisplayPriceInRs } from '../utils/DisplayPriceInRs'
 import { Link } from 'react-router-dom'
 import { validURLConverter } from '../utils/validURLConverter'
 import { PriceWithDiscount } from '../utils/PriceWithDiscount'
+import { categoryFieldNames } from '../utils/categoryFields'
 
 
 const ProductCartUser = ({ data, onClick }) => {
 
     const url = `/product/${validURLConverter(data.name)}-${data._id}`
+
+    const categoryName = data.category?.name || ""
+    const fields = categoryFieldNames[categoryName] || []
+    const specs = fields
+        .map(f => data[f])
+        .filter(Boolean)
+        .join(", ")
 
     return (
         <Link to={url} onClick={onClick} className='shadow-2xl p-4 grid gap-3 max-w-52 rounded'>
@@ -19,7 +27,7 @@ const ProductCartUser = ({ data, onClick }) => {
             </div>
 
             <div className='font-medium text-ellipsis line-clamp-2'>
-                {data.name}  {data.ram}, {data.ssd}, {data.processor}
+                {data.name} {specs && `- ${specs}`}
             </div>
 
 

@@ -9,17 +9,90 @@ const productSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
-    ram:{
-        type:String,
-        required:true
+    category: {
+        type: mongoose.Schema.ObjectId,
+        ref: "category",
+        required: true
     },
-    ssd:{
-        type:String,
-        required:true
+    ram: {
+        type: String,
+        default: ""
     },
-    processor:{
-        type:String,
-        required:true
+    ssd: {
+        type: String,
+        default: ""
+    },
+    processor: {
+        type: String,
+        default: ""
+    },
+    screenSize: {
+        type: String,
+        default: ""
+    },
+    battery: {
+        type: String,
+        default: ""
+    },
+    dpi: {
+        type: String,
+        default: ""
+    },
+    connectivity: {
+        type: String,
+        default: ""
+    },
+    brand: {
+        type: String,
+        default: ""
+    },
+    sensorType: {
+        type: String,
+        default: ""
+    },
+    resolution: {
+        type: String,
+        default: ""
+    },
+    refreshRate: {
+        type: String,
+        default: ""
+    },
+    panelType: {
+        type: String,
+        default: ""
+    },
+    responseTime: {
+        type: String,
+        default: ""
+    },
+    layoutSize: {
+        type: String,
+        default: ""
+    },
+    switchType: {
+        type: String,
+        default: ""
+    },
+    backlight: {
+        type: String,
+        default: ""
+    },
+    driverSize: {
+        type: String,
+        default: ""
+    },
+    frequencyResponse: {
+        type: String,
+        default: ""
+    },
+    noiseCancellation: {
+        type: String,
+        default: ""
+    },
+    mic: {
+        type: String,
+        default: ""
     },
     stock: {
         type: Number,
@@ -37,16 +110,6 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
-    category: {
-        type: mongoose.Schema.ObjectId,
-        ref: "category",
-        required: true
-    },
-    // subCategory: {
-    //     type: mongoose.Schema.ObjectId,
-    //     ref: "subCategory",
-    //     default: null
-    // },
     more_details: {
         type: Object,
         default: {}

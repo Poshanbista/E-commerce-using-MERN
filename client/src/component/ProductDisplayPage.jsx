@@ -226,6 +226,7 @@ import ProductCartUser from "./ProductCartUser";
 
 import { DisplayPriceInRs } from "../utils/DisplayPriceInRs";
 import { PriceWithDiscount } from "../utils/PriceWithDiscount";
+import { categoryFieldNames } from "../utils/categoryFields";
 
 // Icons for delivery information
 import { 
@@ -382,9 +383,14 @@ const ProductDisplayPage = () => {
             <p className="text-gray-600 mt-1 text-sm">{data.unit}</p>
           )}
 
-          {(data.ram || data.ssd || data.processor) && (
+          {(data.ram || data.ssd || data.processor || data.dpi || data.resolution || data.switchType || data.driverSize || data.screenSize) && (
             <h2 className="text-lg py-3 font-semibold text-gray-700">
-              {[data.ram, data.ssd, data.processor].filter(Boolean).join(", ")}
+              {(() => {
+                const categoryName = data.category?.name || ""
+                const fields = categoryFieldNames[categoryName] || []
+                const specs = fields.map(f => data[f]).filter(Boolean).join(", ")
+                return specs || [data.ram, data.ssd, data.processor].filter(Boolean).join(", ")
+              })()}
             </h2>
           )}
 
