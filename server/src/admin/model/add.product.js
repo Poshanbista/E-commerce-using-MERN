@@ -42,11 +42,11 @@ const productSchema = new mongoose.Schema({
         ref: "category",
         required: true
     },
-    subCategory: {
-        type: mongoose.Schema.ObjectId,
-        ref: "subCategory",
-        default: null
-    },
+    // subCategory: {
+    //     type: mongoose.Schema.ObjectId,
+    //     ref: "subCategory",
+    //     default: null
+    // },
     more_details: {
         type: Object,
         default: {}

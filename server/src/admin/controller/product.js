@@ -16,7 +16,7 @@ export const addProduct = async (req, res) => {
             discount,
             description,
             category,
-            subCategory,
+            // subCategory,
         } = req.body;
 
         if (!name || !image || !ram || !ssd || !processor || !price || !stock || !discount || !description || !category) {
@@ -39,7 +39,7 @@ export const addProduct = async (req, res) => {
             discount,
             description,
             category,
-            subCategory,
+            // subCategory,
         })
 
         await newProduct.save()

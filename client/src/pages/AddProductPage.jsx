@@ -54,7 +54,7 @@ const AddProductPage = () => {
         const fetchSubCategories = async () => {
             try {
                 const response = await Axios({
-                    ...summaryApi.get_subCategory_by_category,
+                    // ...summaryApi.get_subCategory_by_category,
                     data: { categoryId: data.category }
                 })
                 const { data: resData } = response
@@ -144,7 +144,9 @@ const AddProductPage = () => {
             <div className='p-4 rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 mb-6 shadow-lg'>
                 <h2 className='font-bold text-2xl text-white'>Add New Product</h2>
                 <p className='text-blue-100'>Fill in the details below to add a new product</p>
-            </div>f
+            </div>
+
+            
 
             <div className='bg-white rounded-xl shadow-md overflow-hidden p-6'>
                 <form className='grid grid-cols-1 md:grid-cols-2 gap-6' onSubmit={handleSubmit}>
@@ -181,7 +183,7 @@ const AddProductPage = () => {
                             </select>
                         </div>
 
-                        <div className='space-y-1'>
+                        {/* <div className='space-y-1'>
                             <label htmlFor='subCategory' className='block text-sm font-medium text-gray-700'>Sub Category</label>
                             <select
                                 id='subCategory'
@@ -195,7 +197,7 @@ const AddProductPage = () => {
                                     <option key={sub._id} value={sub._id}>{sub.name}</option>
                                 ))}
                             </select>
-                        </div>
+                        </div> */}
 
                         <div className='space-y-1'>
                             <label htmlFor='processor' className='block text-sm font-medium text-gray-700'>Processor/Generation</label>
@@ -271,6 +273,7 @@ const AddProductPage = () => {
                                     id='productImage'
                                     className='hidden'
                                     accept='image/*'
+                                    required
                                     onChange={handleUploadImage}
                                 />
                             </label>

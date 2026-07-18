@@ -44,7 +44,7 @@ app.get("/",(req,res)=>{
 
 app.use("/api",userRoute);
 app.use("/api/category",categoryRoute)
-app.use("/api/subCategory",subCategoryRoute)
+// app.use("/api/subCategory",subCategoryRoute)
 app.use("/api/file",uploadImageRoute)
 app.use("/api/product",productRoute)
 app.use("/api/cart",cartRoute)
