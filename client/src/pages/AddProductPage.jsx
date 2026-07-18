@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaCloudUploadAlt } from "react-icons/fa";
 import uploadImage from "../utils/uploadImage.js"
 import ViewImage from '../component/ViewImage.jsx';
@@ -20,10 +20,53 @@ const AddProductPage = () => {
         price: "",
         discount: "",
         description: "",
+        category: "",
+        subCategory: "",
     })
+
+    const [categoryList, setCategoryList] = useState([])
+    const [subCategoryList, setSubCategoryList] = useState([])
 
     const [viewImageURL, setViewImageURl] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await Axios({ ...summaryApi.get_category })
+                const { data: resData } = response
+                if (resData.success) {
+                    setCategoryList(resData.data)
+                }
+            } catch (error) {
+                AxiosToastError(error)
+            }
+        }
+        fetchCategories()
+    }, [])
+
+    useEffect(() => {
+        if (!data.category) {
+            setSubCategoryList([])
+            setData(prev => ({ ...prev, subCategory: "" }))
+            return
+        }
+        const fetchSubCategories = async () => {
+            try {
+                const response = await Axios({
+                    ...summaryApi.get_subCategory_by_category,
+                    data: { categoryId: data.category }
+                })
+                const { data: resData } = response
+                if (resData.success) {
+                    setSubCategoryList(resData.data)
+                }
+            } catch (error) {
+                AxiosToastError(error)
+            }
+        }
+        fetchSubCategories()
+    }, [data.category])
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -85,6 +128,8 @@ const AddProductPage = () => {
                     price: "",
                     discount: "",
                     description: "",
+                    category: "",
+                    subCategory: "",
                 })
             }
         } catch (error) {
@@ -99,7 +144,7 @@ const AddProductPage = () => {
             <div className='p-4 rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 mb-6 shadow-lg'>
                 <h2 className='font-bold text-2xl text-white'>Add New Product</h2>
                 <p className='text-blue-100'>Fill in the details below to add a new product</p>
-            </div>
+            </div>f
 
             <div className='bg-white rounded-xl shadow-md overflow-hidden p-6'>
                 <form className='grid grid-cols-1 md:grid-cols-2 gap-6' onSubmit={handleSubmit}>
@@ -117,6 +162,39 @@ const AddProductPage = () => {
                                 required
                                 className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition'
                             />
+                        </div>
+
+                        <div className='space-y-1'>
+                            <label htmlFor='category' className='block text-sm font-medium text-gray-700'>Category</label>
+                            <select
+                                id='category'
+                                name='category'
+                                value={data.category}
+                                onChange={handleChange}
+                                required
+                                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white'
+                            >
+                                <option value="">Select category</option>
+                                {categoryList.map(cat => (
+                                    <option key={cat._id} value={cat._id}>{cat.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className='space-y-1'>
+                            <label htmlFor='subCategory' className='block text-sm font-medium text-gray-700'>Sub Category</label>
+                            <select
+                                id='subCategory'
+                                name='subCategory'
+                                value={data.subCategory}
+                                onChange={handleChange}
+                                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white'
+                            >
+                                <option value="">Select sub category (optional)</option>
+                                {subCategoryList.map(sub => (
+                                    <option key={sub._id} value={sub._id}>{sub.name}</option>
+                                ))}
+                            </select>
                         </div>
 
                         <div className='space-y-1'>

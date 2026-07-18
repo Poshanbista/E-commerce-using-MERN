@@ -62,6 +62,10 @@ export const summaryApi = {
         url: '/api/subCategory/deleteSubCategory',
         method: 'delete'
     },
+    get_subCategory_by_category: {
+        url: '/api/subCategory/getByCategory',
+        method: 'post'
+    },
     uploadImage: {
         url: '/api/file/upload',
         method: 'post'

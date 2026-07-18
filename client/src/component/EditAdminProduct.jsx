@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaCloudUploadAlt } from "react-icons/fa";
 import uploadImage from "../utils/uploadImage.js"
 import ViewImage from '../component/ViewImage.jsx';
@@ -21,10 +21,51 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
     price: propsData.price,
     discount: propsData.discount,
     description: propsData.description,
+    category: propsData.category || "",
+    subCategory: propsData.subCategory || "",
   })
 
+  const [categoryList, setCategoryList] = useState([])
+  const [subCategoryList, setSubCategoryList] = useState([])
   const [viewImageURL, setViewImageURl] = useState("")
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await Axios({ ...summaryApi.get_category })
+        const { data: resData } = response
+        if (resData.success) {
+          setCategoryList(resData.data)
+        }
+      } catch (error) {
+        AxiosToastError(error)
+      }
+    }
+    fetchCategories()
+  }, [])
+
+  useEffect(() => {
+    if (!data.category) {
+      setSubCategoryList([])
+      setData(prev => ({ ...prev, subCategory: "" }))
+      return
+    }
+    const fetchSubCategories = async () => {
+      try {
+        const response = await Axios({
+          ...summaryApi.get_subCategory_by_category,
+          data: { categoryId: data.category }
+        })
+        const { data: resData } = response
+        if (resData.success) {
+          setSubCategoryList(resData.data)
+        }
+      } catch (error) {
+        AxiosToastError(error)
+      }
+    }
+    fetchSubCategories()
+  }, [data.category])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -90,6 +131,8 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
           price: "",
           discount: "",
           description: "",
+          category: "",
+          subCategory: "",
         })
       }
 
@@ -167,6 +210,39 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
                             required
                             className='border p-1.5 rounded hover:border-amber-400  bg-blue-100'
                         />
+                    </div>
+
+                    <div className='grid gap-1'>
+                        <label htmlFor='category'>Category</label>
+                        <select
+                            id='category'
+                            name='category'
+                            value={data.category}
+                            onChange={handleChange}
+                            required
+                            className='border p-1.5 rounded hover:border-amber-400 bg-blue-100'
+                        >
+                            <option value="">Select category</option>
+                            {categoryList.map(cat => (
+                                <option key={cat._id} value={cat._id}>{cat.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className='grid gap-1'>
+                        <label htmlFor='subCategory'>Sub Category</label>
+                        <select
+                            id='subCategory'
+                            name='subCategory'
+                            value={data.subCategory}
+                            onChange={handleChange}
+                            className='border p-1.5 rounded hover:border-amber-400 bg-blue-100'
+                        >
+                            <option value="">Select sub category (optional)</option>
+                            {subCategoryList.map(sub => (
+                                <option key={sub._id} value={sub._id}>{sub.name}</option>
+                            ))}
+                        </select>
                     </div>     
               </div>
              

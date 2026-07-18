@@ -49,6 +49,27 @@ export async function getSubCategory(req, res) {
     }
 }
 
+//get sub category by category id
+export async function getSubCategoryByCategory(req, res) {
+    try {
+        const { categoryId } = req.body
+
+        if (!categoryId) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: "categoryId required" })
+        }
+
+        const data = await subCategory.find({
+            category: { "$in": [categoryId] }
+        }).sort({ name: 1 })
+
+        return res.status(StatusCodes.OK).json({ data: data, success: true })
+
+    } catch (error) {
+        console.log("Error in getting sub category by category", error)
+        console.log("Server Error")
+    }
+}
+
 //delete sub category
 export async function deleteSubCategory(req, res) {
     try {

@@ -15,9 +15,11 @@ export const addProduct = async (req, res) => {
             stock,
             discount,
             description,
+            category,
+            subCategory,
         } = req.body;
 
-        if (!name || !image || !ram || !ssd || !processor || !price || !stock || !discount || !description) {
+        if (!name || !image || !ram || !ssd || !processor || !price || !stock || !discount || !description || !category) {
             return res.status(StatusCodes.BAD_REQUEST).json({ message: "All fields are required" });
         }
 
@@ -36,6 +38,8 @@ export const addProduct = async (req, res) => {
             stock,
             discount,
             description,
+            category,
+            subCategory,
         })
 
         await newProduct.save()
