@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 
-
 const userRecentViewSchema = new mongoose.Schema({
-    userId: 
+    userId:
         {
             type: mongoose.Schema.ObjectId,
             ref: 'User'
@@ -12,9 +11,10 @@ const userRecentViewSchema = new mongoose.Schema({
             type: mongoose.Schema.ObjectId,
             ref: 'product'
         },
-    ram: String,
-    ssd: String,
-    processor: String,
+    category: {
+        type: String,
+        default: ""
+    },
     viewAt: {
         type: Date,
         default: Date.now,

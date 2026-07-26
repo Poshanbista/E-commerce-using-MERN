@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -38,7 +38,8 @@ const ProductDisplayPage = () => {
 
   const [image, setImage] = useState(0);
 
-  const [recommendedProducts, setRecommendedProducts] = useState([]);
+  const [contentBasedRecommendations, setContentBasedRecommendations] = useState([]);
+  const [userBasedRecommendations, setUserBasedRecommendations] = useState([]);
 
   const fetchProductDetails = async () => {
     try {
@@ -63,19 +64,21 @@ const ProductDisplayPage = () => {
     }
   };
 
-  const fetchRecommended = async (userId) => {
+  const fetchRecommended = async (userId, productId) => {
     try {
       const response = await Axios({
         ...summaryApi.recommended,
         data: {
           userId,
+          productId,
         },
       });
 
       const { data: responseData } = response;
 
       if (responseData.success) {
-        setRecommendedProducts(responseData.data);
+        setContentBasedRecommendations(responseData.contentBasedRecommendations || []);
+        setUserBasedRecommendations(responseData.userBasedRecommendations || []);
       }
     } catch (error) {
       AxiosToastError(error);
@@ -92,7 +95,7 @@ const ProductDisplayPage = () => {
         },
       });
 
-      fetchRecommended(user._id);
+      fetchRecommended(user._id, productId);
     } catch (error) {
       AxiosToastError(error);
     }
@@ -105,6 +108,29 @@ const ProductDisplayPage = () => {
   // Calculate discount price
   const discountPrice = PriceWithDiscount(data.price, data.discount);
   const isOutOfStock = data.stock === 0;
+
+  // Merge and deduplicate both recommendation lists into a single "You may also like" section
+  // Content-based (exact matches) takes priority, then collaborative filtering fills remaining slots
+  const allRecommended = useMemo(() => {
+    const seen = new Set();
+    const merged = [];
+
+    for (const p of contentBasedRecommendations) {
+      if (!seen.has(p._id)) {
+        seen.add(p._id);
+        merged.push(p);
+      }
+    }
+
+    for (const p of userBasedRecommendations) {
+      if (!seen.has(p._id)) {
+        seen.add(p._id);
+        merged.push(p);
+      }
+    }
+
+    return merged.slice(0, 4);
+  }, [contentBasedRecommendations, userBasedRecommendations]);
 
   return (
     <section className="container mx-auto p-4">
@@ -288,14 +314,14 @@ const ProductDisplayPage = () => {
       </div>
 
       {/* Recommended Products */}
-      {recommendedProducts.length > 0 && (
+      {allRecommended.length > 0 && (
         <div className="mt-14">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">
             You may also like
           </h2>
 
           <div className="grid grid-cols-5 gap-4">
-            {recommendedProducts.map((product) => (
+            {allRecommended.map((product) => (
               <ProductCartUser
                 key={product._id}
                 data={product}
