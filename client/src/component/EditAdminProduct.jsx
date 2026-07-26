@@ -9,6 +9,7 @@ import { AxiosToastError } from '../utils/AxiosToastError.js'
 import toast from 'react-hot-toast';
 import { IoClose } from 'react-icons/io5';
 import { categoryFields, categoryFieldNames } from '../utils/categoryFields.js';
+import RichTextEditor from '../component/RichTextEditor.jsx';
 
 const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
   const allCategoryFieldNames = [
@@ -284,17 +285,10 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
 
               <div className='grid gap-1'>
                 <label htmlFor='description'>Description</label>
-                <textarea
-                  type='text'
-                  id='description'
-                  placeholder='enter product description'
-                  name='description'
+                <RichTextEditor
                   value={data.description}
-                  onChange={handleChange}
-                  required
-                  multiple
-                  rows={3}
-                  className='border p-1.5 rounded hover:border-amber-400 resize-none bg-blue-100'
+                  onChange={(html) => setData(prev => ({ ...prev, description: html }))}
+                  placeholder='Enter product description...'
                 />
               </div>
 

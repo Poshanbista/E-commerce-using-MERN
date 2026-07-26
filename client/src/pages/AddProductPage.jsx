@@ -8,6 +8,7 @@ import { AxiosToastError } from '../utils/AxiosToastError.js'
 import toast from 'react-hot-toast';
 import { FiMinus } from 'react-icons/fi';
 import { categoryFields } from '../utils/categoryFields.js';
+import RichTextEditor from '../component/RichTextEditor.jsx';
 
 const AddProductPage = () => {
     const [data, setData] = useState({
@@ -215,15 +216,10 @@ const AddProductPage = () => {
 
                         <div className='space-y-1'>
                             <label htmlFor='description' className='block text-sm font-medium text-gray-700'>Description</label>
-                            <textarea
-                                id='description'
-                                placeholder='Detailed product description...'
-                                name='description'
+                            <RichTextEditor
                                 value={data.description}
-                                onChange={handleChange}
-                                required
-                                rows={4}
-                                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition'
+                                onChange={(html) => setData(prev => ({ ...prev, description: html }))}
+                                placeholder='Detailed product description...'
                             />
                         </div>
                     </div>

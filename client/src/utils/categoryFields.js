@@ -1,5 +1,6 @@
 export const categoryFields = {
     Laptop: [
+        { name: "brand", label: "Brand", placeholder: "Apple, Dell, HP" },
         { name: "ram", label: "RAM", placeholder: "16GB" },
         { name: "ssd", label: "SSD", placeholder: "512GB" },
         { name: "processor", label: "Processor/Generation", placeholder: "M3 Pro, 12-core" },
@@ -13,6 +14,7 @@ export const categoryFields = {
         { name: "sensorType", label: "Sensor Type", placeholder: "Optical / Laser" },
     ],
     Monitor: [
+        { name: "brand", label: "Brand", placeholder: "Samsung, LG, Dell" },
         { name: "screenSize", label: "Screen Size", placeholder: "27 inch" },
         { name: "resolution", label: "Resolution", placeholder: "2560x1440" },
         { name: "refreshRate", label: "Refresh Rate", placeholder: "165Hz" },
@@ -20,12 +22,14 @@ export const categoryFields = {
         { name: "responseTime", label: "Response Time", placeholder: "1ms" },
     ],
     Keyboard: [
+        { name: "brand", label: "Brand", placeholder: "Logitech, Razer, Corsair" },
         { name: "layoutSize", label: "Layout Size", placeholder: "Full Size / TKL / 60%" },
         { name: "switchType", label: "Switch Type", placeholder: "Cherry MX Red / Blue / Brown" },
         { name: "backlight", label: "Backlight", placeholder: "RGB / White / None" },
         { name: "connectivity", label: "Connectivity", placeholder: "Wired / Wireless / Bluetooth" },
     ],
     Headphone: [
+        { name: "brand", label: "Brand", placeholder: "Sony, JBL, Bose" },
         { name: "driverSize", label: "Driver Size", placeholder: "50mm" },
         { name: "frequencyResponse", label: "Frequency Response", placeholder: "20Hz - 20kHz" },
         { name: "connectivity", label: "Connectivity", placeholder: "Wired / Wireless / Bluetooth" },
@@ -35,9 +39,9 @@ export const categoryFields = {
 }
 
 export const categoryFieldNames = {
-    Laptop: ["ram", "ssd", "processor", "screenSize", "battery"],
+    Laptop: ["brand", "ram", "ssd", "processor", "screenSize", "battery"],
     Mouse: ["dpi", "connectivity", "brand", "sensorType"],
-    Monitor: ["screenSize", "resolution", "refreshRate", "panelType", "responseTime"],
-    Keyboard: ["layoutSize", "switchType", "backlight", "connectivity"],
-    Headphone: ["driverSize", "frequencyResponse", "connectivity", "noiseCancellation", "mic"],
+    Monitor: ["brand", "screenSize", "resolution", "refreshRate", "panelType", "responseTime"],
+    Keyboard: ["brand", "layoutSize", "switchType", "backlight", "connectivity"],
+    Headphone: ["brand", "driverSize", "frequencyResponse", "connectivity", "noiseCancellation", "mic"],
 }
