@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -38,7 +38,8 @@ const ProductDisplayPage = () => {
 
   const [image, setImage] = useState(0);
 
-  const [recommendations, setRecommendations] = useState([]);
+  const [contentBasedRecommendations, setContentBasedRecommendations] = useState([]);
+  const [userBasedRecommendations, setUserBasedRecommendations] = useState([]);
 
   const fetchProductDetails = async () => {
     try {
@@ -76,7 +77,8 @@ const ProductDisplayPage = () => {
       const { data: responseData } = response;
 
       if (responseData.success) {
-        setRecommendations(responseData.recommendations || []);
+        setContentBasedRecommendations(responseData.contentBasedRecommendations || []);
+        setUserBasedRecommendations(responseData.userBasedRecommendations || []);
       }
     } catch (error) {
       AxiosToastError(error);
@@ -106,6 +108,24 @@ const ProductDisplayPage = () => {
   // Calculate discount price
   const discountPrice = PriceWithDiscount(data.price, data.discount);
   const isOutOfStock = data.stock === 0;
+
+  // Interleave content-based and collaborative recommendations
+  // Pattern: [content[0], collab[0], content[1], collab[1], ...]
+  const allRecommended = useMemo(() => {
+    const merged = [];
+    const maxLen = Math.max(contentBasedRecommendations.length, userBasedRecommendations.length);
+
+    for (let i = 0; i < maxLen; i++) {
+      if (i < contentBasedRecommendations.length) {
+        merged.push(contentBasedRecommendations[i]);
+      }
+      if (i < userBasedRecommendations.length) {
+        merged.push(userBasedRecommendations[i]);
+      }
+    }
+
+    return merged;
+  }, [contentBasedRecommendations, userBasedRecommendations]);
 
   return (
     <section className="container mx-auto p-4">
@@ -289,14 +309,14 @@ const ProductDisplayPage = () => {
       </div>
 
       {/* Recommended Products */}
-      {recommendations.length > 0 && (
+      {allRecommended.length > 0 && (
         <div className="mt-14">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">
             You may also like
           </h2>
 
           <div className="grid grid-cols-5 gap-4">
-            {recommendations.map((product) => (
+            {allRecommended.map((product) => (
               <ProductCartUser
                 key={product._id}
                 data={product}
