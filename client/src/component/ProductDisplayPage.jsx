@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -38,8 +38,7 @@ const ProductDisplayPage = () => {
 
   const [image, setImage] = useState(0);
 
-  const [contentBasedRecommendations, setContentBasedRecommendations] = useState([]);
-  const [userBasedRecommendations, setUserBasedRecommendations] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
 
   const fetchProductDetails = async () => {
     try {
@@ -77,8 +76,7 @@ const ProductDisplayPage = () => {
       const { data: responseData } = response;
 
       if (responseData.success) {
-        setContentBasedRecommendations(responseData.contentBasedRecommendations || []);
-        setUserBasedRecommendations(responseData.userBasedRecommendations || []);
+        setRecommendations(responseData.recommendations || []);
       }
     } catch (error) {
       AxiosToastError(error);
@@ -103,34 +101,11 @@ const ProductDisplayPage = () => {
 
   useEffect(() => {
     fetchProductDetails();
-  }, [productId]);
+  }, [productId, user?._id]);
 
   // Calculate discount price
   const discountPrice = PriceWithDiscount(data.price, data.discount);
   const isOutOfStock = data.stock === 0;
-
-  // Merge and deduplicate both recommendation lists into a single "You may also like" section
-  // Content-based (exact matches) takes priority, then collaborative filtering fills remaining slots
-  const allRecommended = useMemo(() => {
-    const seen = new Set();
-    const merged = [];
-
-    for (const p of contentBasedRecommendations) {
-      if (!seen.has(p._id)) {
-        seen.add(p._id);
-        merged.push(p);
-      }
-    }
-
-    for (const p of userBasedRecommendations) {
-      if (!seen.has(p._id)) {
-        seen.add(p._id);
-        merged.push(p);
-      }
-    }
-
-    return merged.slice(0, 4);
-  }, [contentBasedRecommendations, userBasedRecommendations]);
 
   return (
     <section className="container mx-auto p-4">
@@ -314,14 +289,14 @@ const ProductDisplayPage = () => {
       </div>
 
       {/* Recommended Products */}
-      {allRecommended.length > 0 && (
+      {recommendations.length > 0 && (
         <div className="mt-14">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">
             You may also like
           </h2>
 
           <div className="grid grid-cols-5 gap-4">
-            {allRecommended.map((product) => (
+            {recommendations.map((product) => (
               <ProductCartUser
                 key={product._id}
                 data={product}

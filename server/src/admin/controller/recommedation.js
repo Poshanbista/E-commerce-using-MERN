@@ -1,29 +1,22 @@
 // =============================================================================
 // Hybrid Recommendation Controller
 // =============================================================================
-// Orchestrates content-based and user-based collaborative filtering
-// to return two separate recommendation arrays.
+// Uses the hybrid recommendation service that combines content-based
+// and collaborative filtering with dynamic weight adjustment.
 // =============================================================================
 
 import { StatusCodes } from "http-status-codes";
-import { getContentBasedRecommendations } from "../services/contentBased.js";
-import { getCollaborativeRecommendations } from "../services/collaborativeFiltering.js";
+import { getHybridRecommendations } from "../services/hybridRecommendation.js";
 
 export const getRecommendedProducts = async (req, res) => {
   try {
     const { userId, productId } = req.body;
 
-    // Run both recommendation algorithms in parallel for better performance
-    const [contentBasedRecommendations, userBasedRecommendations] =
-      await Promise.all([
-        getContentBasedRecommendations(productId),
-        getCollaborativeRecommendations(userId),
-      ]);
+    const recommendations = await getHybridRecommendations(userId, productId);
 
     return res.status(StatusCodes.OK).json({
       success: true,
-      contentBasedRecommendations,
-      userBasedRecommendations,
+      recommendations,
     });
   } catch (error) {
     return res
