@@ -9,7 +9,6 @@ export const categoryFields = {
     Mouse: [
         { name: "dpi", label: "DPI", placeholder: "16000" },
         { name: "connectivity", label: "Connectivity", placeholder: "Wireless / Bluetooth / USB" },
-        { name: "brand", label: "Brand", placeholder: "Logitech, Razer" },
         { name: "sensorType", label: "Sensor Type", placeholder: "Optical / Laser" },
     ],
     Monitor: [
@@ -36,7 +35,7 @@ export const categoryFields = {
 
 export const categoryFieldNames = {
     Laptop: ["ram", "ssd", "processor", "screenSize", "battery"],
-    Mouse: ["dpi", "connectivity", "brand", "sensorType"],
+    Mouse: ["dpi", "connectivity", "sensorType"],
     Monitor: ["screenSize", "resolution", "refreshRate", "panelType", "responseTime"],
     Keyboard: ["layoutSize", "switchType", "backlight", "connectivity"],
     Headphone: ["driverSize", "frequencyResponse", "connectivity", "noiseCancellation", "mic"],

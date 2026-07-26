@@ -23,6 +23,7 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
     _id: propsData._id,
     name: propsData.name,
     image: propsData.image,
+    brand: propsData.brand || "",
     stock: propsData.stock,
     price: propsData.price,
     discount: propsData.discount,
@@ -112,8 +113,9 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
+      const { _id, name, image, brand, stock, price, discount, description, category } = data
       const payload = {
-        ...data,
+        _id, name, image, brand, stock, price, discount, description, category,
         ...categoryFieldsData,
       }
 
@@ -180,6 +182,22 @@ const EditAdminProduct = ({ close, data: propsData, fetchProductData }) => {
                   ))}
                 </select>
               </div>
+
+              {data.category && (
+                <div className='grid gap-1'>
+                  <label htmlFor='brand'>Brand</label>
+                  <input
+                    type='text'
+                    id='brand'
+                    placeholder='e.g. Apple, Samsung, Logitech'
+                    name='brand'
+                    value={data.brand}
+                    onChange={handleChange}
+                    required
+                    className='border p-1.5 rounded hover:border-amber-400 bg-white'
+                  />
+                </div>
+              )}
 
               {currentFields.length > 0 && (
                 <div className='grid gap-2 p-2 bg-blue-50 rounded border border-blue-200'>

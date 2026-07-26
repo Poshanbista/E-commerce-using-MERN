@@ -14,6 +14,7 @@ const AddProductPage = () => {
         name: "",
         image: [],
         category: "",
+        brand: "",
         stock: "",
         price: "",
         discount: "",
@@ -125,6 +126,7 @@ const AddProductPage = () => {
                     name: "",
                     image: [],
                     category: "",
+                    brand: "",
                     stock: "",
                     price: "",
                     discount: "",
@@ -183,6 +185,22 @@ const AddProductPage = () => {
                                 ))}
                             </select>
                         </div>
+
+                        {data.category && (
+                            <div className='space-y-1'>
+                                <label htmlFor='brand' className='block text-sm font-medium text-gray-700'>Brand</label>
+                                <input
+                                    type='text'
+                                    id='brand'
+                                    placeholder='e.g. Apple, Samsung, Logitech'
+                                    name='brand'
+                                    value={data.brand}
+                                    onChange={handleChange}
+                                    required
+                                    className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition'
+                                />
+                            </div>
+                        )}
 
                         {currentFields.length > 0 && (
                             <div className='p-3 bg-blue-50 rounded-lg border border-blue-200'>
